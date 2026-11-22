@@ -1,0 +1,14 @@
+[
+  {"query": "Can you give me a tl;dr of this 40-page vendor contract? I need the obligations and deadlines.", "should_trigger": true},
+  {"query": "Кратко перескажи стенограмму вчерашнего созвона, только решения и кто за что отвечает", "should_trigger": true},
+  {"query": "Make study notes from this lecture transcript, my students will learn from them", "should_trigger": true},
+  {"query": "Summarize these 200 customer reviews: what are the main complaints and how often each comes up?", "should_trigger": true},
+  {"query": "Сделай выжимку рисков из этого договора для юриста", "should_trigger": true},
+  {"query": "We need to summarize thousands of support tickets a day. Which summarization pipeline should we use and how do we compare options?", "should_trigger": true},
+  {"query": "Recap this email thread for my manager in three bullet points", "should_trigger": true},
+  {"query": "Translate this paragraph into German, keep the formal tone", "should_trigger": false},
+  {"query": "Rewrite this product description so it sounds more friendly, same length", "should_trigger": false},
+  {"query": "Write a short story about a lighthouse keeper who finds a message in a bottle", "should_trigger": false},
+  {"query": "Fix the failing unit test in parser_test.py", "should_trigger": false},
+  {"query": "Переведи это письмо на английский", "should_trigger": false}
+]

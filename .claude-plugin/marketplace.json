@@ -1,0 +1,23 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "agent-skills",
+  "description": "Agent Skills by KazKozDev: checkable, tested skills for Claude Code and other agents that read SKILL.md.",
+  "owner": {
+    "name": "KazKozDev"
+  },
+  "plugins": [
+    {
+      "name": "verified-summarization",
+      "description": "Faithful, checkable summaries of documents, transcripts, email threads and contracts: every sentence cites a source paragraph, claims are verified by a script and by meaning, conditions are kept.",
+      "source": "./",
+      "strict": false,
+      "skills": ["./skills/verified-summarization"],
+      "author": {
+        "name": "KazKozDev"
+      },
+      "license": "MIT",
+      "keywords": ["summarization", "summary", "verification", "citations", "faithfulness"],
+      "category": "productivity"
+    }
+  ]
+}
