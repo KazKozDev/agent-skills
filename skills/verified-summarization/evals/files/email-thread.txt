@@ -1,0 +1,26 @@
+From: Dana Ortiz
+To: Release team
+Subject: Mobile app 3.2 release
+
+Hi all, proposing we ship 3.2 on Thursday 12 November 2026. Blockers: the payment crash on Android 14 and the missing Polish translations. Who owns what?
+
+
+From: Marek Nowak
+To: Release team
+Subject: RE: Mobile app 3.2 release
+
+I'll take the Polish translations; I can have them done by Monday 9 November 2026. The payment crash is outside my area.
+
+
+From: Priya Shah
+To: Release team
+Subject: RE: Mobile app 3.2 release
+
+I looked at the payment crash. It only happens when the user has no saved card, so we could ship if we hide the "Pay later" button for those users. I can't fix the root cause before the 12th.
+
+
+From: Dana Ortiz
+To: Release team
+Subject: RE: Mobile app 3.2 release
+
+Decision: we ship 3.2 on 12 November 2026 with "Pay later" hidden for users without a saved card. The real fix goes into 3.2.1; we still need someone to own that. Also, does marketing need the release notes before the 12th? Nobody has answered that yet.
