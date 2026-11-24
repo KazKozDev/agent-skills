@@ -1,5 +1,7 @@
 # agent-skills
 
+[![tests](https://github.com/KazKozDev/agent-skills/actions/workflows/tests.yml/badge.svg)](https://github.com/KazKozDev/agent-skills/actions/workflows/tests.yml)
+
 Agent Skills for Claude Code and other agents that read `SKILL.md`: Codex, Gemini CLI, Cursor, Copilot, OpenCode, Hermes, OpenClaw and more. Each skill ships with its scripts, evals and an honest note on what it costs.
 
 | Skill | What it does |
@@ -106,16 +108,19 @@ Six tasks, each run twice with the skill and twice without it, on one model (dee
 ## Tests
 
 ```bash
-python3 tests/test_verify_summary.py
+python3 tests/check_repo.py          # every skill has SKILL.md, evals, a plugin entry and a README row
+python3 tests/test_verify_summary.py # 14 cases: seven real errors to catch, seven false alarms not to raise
+python3 tests/test_label_source.py   # fragment IDs, splitting long paragraphs, errors on bad input
 ```
 
-14 cases for verified-summarization's `verify_summary.py`: seven real errors it must catch, seven false alarms it must not raise.
+All three run in CI on every push and pull request. They need only Python 3.
 
 ## Adding a skill
 
 1. `skills/<name>/SKILL.md`, with its scripts and references next to it.
-2. `skills/<name>/evals/`: `evals.json` and `trigger-queries.json` in the skill-creator format, and the results.
-3. A plugin entry in `.claude-plugin/marketplace.json`, a row in the table above and a section here.
+2. `skills/<name>/evals/`: `evals.json` and `trigger-queries.json` in the skill-creator format, and a `README.md` with what was run and the results.
+3. A plugin entry with a `version` in `.claude-plugin/marketplace.json`, a row in the table above, a section here and a line in [CHANGELOG.md](CHANGELOG.md).
+4. `python3 tests/check_repo.py` passes.
 
 ## License
 
