@@ -1,0 +1,21 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: Repository structure
+        run: python3 tests/check_repo.py
+      - name: verify_summary.py
+        run: python3 tests/test_verify_summary.py
+      - name: label_source.py
+        run: python3 tests/test_label_source.py

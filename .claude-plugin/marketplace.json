@@ -9,6 +9,7 @@
     {
       "name": "verified-summarization",
       "description": "Faithful, checkable summaries of documents, transcripts, email threads and contracts: every sentence cites a source paragraph, claims are verified by a script and by meaning, conditions are kept.",
+      "version": "0.1.0",
       "source": "./",
       "strict": false,
       "skills": ["./skills/verified-summarization"],
@@ -22,6 +23,7 @@
     {
       "name": "complete-list-collection",
       "description": "Collects the first N unique items from a paginated web listing into items.jsonl, saving page by page, deduplicating by stable ID, and writing a report that names any problem and where to resume.",
+      "version": "0.1.0",
       "source": "./",
       "strict": false,
       "skills": ["./skills/complete-list-collection"],
