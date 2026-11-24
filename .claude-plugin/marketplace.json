@@ -18,6 +18,19 @@
       "license": "MIT",
       "keywords": ["summarization", "summary", "verification", "citations", "faithfulness"],
       "category": "productivity"
+    },
+    {
+      "name": "complete-list-collection",
+      "description": "Collects the first N unique items from a paginated web listing into items.jsonl, saving page by page, deduplicating by stable ID, and writing a report that names any problem and where to resume.",
+      "source": "./",
+      "strict": false,
+      "skills": ["./skills/complete-list-collection"],
+      "author": {
+        "name": "KazKozDev"
+      },
+      "license": "MIT",
+      "keywords": ["scraping", "pagination", "crawl", "deduplication", "listings"],
+      "category": "data"
     }
   ]
 }

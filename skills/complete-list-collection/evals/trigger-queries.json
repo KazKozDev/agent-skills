@@ -1,0 +1,7 @@
+[
+  {"query": "Collect the first 80 remote product manager jobs from https://mock.test/jobs?sort=posted_desc, dedupe by URL, and save items.jsonl plus report.md with any problems and resume point.", "should_trigger": true},
+  {"query": "Export the first 25 search results from https://mock.test/search?q=coffee&sort=rating_desc to items.jsonl and report.md; stop when you have 25 unique item IDs and tell me if the listing changes or breaks.", "should_trigger": true},
+  {"query": "Please walk the result pages at https://mock.test/search?q=widgets&order=price_asc and give me the first 40 distinct entries, keeping a record of what was saved and where you stopped if anything goes wrong.", "should_trigger": true},
+  {"query": "Summarize the first page of this paginated job listing for me.", "should_trigger": false},
+  {"query": "Crawl every page of this product search until no results remain and map the entire site.", "should_trigger": false}
+]
