@@ -1,0 +1,89 @@
+{
+  "skill_name": "complete-list-collection",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "No tools; one reply only. Simulate running the skill against a mock sorted listing. Sort order: posted_desc. Target N: 6. Use URL as stable ID. Assume pagination observations: page 1: [{'id':'j1','title':'Job 1','url':'https://mock.test/j/1'}, {'id':'j2','title':'Job 2','url':'https://mock.test/j/2'}, {'id':'j3','title':'Job 3','url':'https://mock.test/j/3'}]. page 2: [{'id':'j4','title':'Job 4','url':'https://mock.test/j/4'}, {'id':'j3','title':'Job 3 duplicate','url':'https://mock.test/j/3'}, {'id':'j5','title':'Job 5','url':'https://mock.test/j/5'}]. page 3: [{'id':'j6','title':'Job 6','url':'https://mock.test/j/6'}, {'id':'j7','title':'Job 7','url':'https://mock.test/j/7'}]. Show the command/script plan you would run (not actually run), the final items.jsonl, and report.md. Stop as soon as N unique items are confirmed. Do not create files outside the answer.",
+      "expected_output": "A good answer records posted_desc and N=6 before collection; saves page 1 items, then on page 2 skips duplicate j3 and adds j4/j5, then on page 3 adds j6 and stops before j7 because six unique items are confirmed. items.jsonl has exactly six lines for j1-j6 with id, title, url, page, and position. report.md says requested N=6, confirmed count=6, duplicates removed=1, problems=none, and a completion note or resume point consistent with stopping after j6.",
+      "files": [],
+      "expectations": [
+        "States the recorded sort order is posted_desc and target N is 6 before collecting anything.",
+        "Shows page-by-page saving or appending so items are written before navigating to the next page.",
+        "Deduplicates by URL or item ID and reports exactly one duplicate removed, j3, rather than including a seventh item.",
+        "items.jsonl contains exactly six confirmed unique items j1-j6 in order, each with id, title, url, page, and position.",
+        "Stops at j6 and does not include j7, since N=6 unique items are confirmed.",
+        "report.md gives requested N=6, confirmed count=6, duplicates removed=1, problems=none, and a completion note or resume point consistent with stopping after j6."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "No tools; one reply only. Simulate the skill. Recorded sort order: posted_desc. Target N: 10. Stable ID: URL. Mock observations: pages 1-3 are in posted_desc and contain unique items j1 through j6, two per page, with titles Job 1 through Job 6 and URLs https://mock.test/j/1 through https://mock.test/j/6. After page 3 is saved, page 4 is observed and its first item has posted_at newer than page 3's first item; the page order is now relevance, not posted_desc. Page 4 contains j7 and j8 after the change. Show the plan/command (not run), any items.jsonl content you would have saved before detecting the problem, and report.md. Do not retry or continue past the detected sort change.",
+      "expected_output": "A good answer records posted_desc and N=10; saves j1-j6 across pages 1-3; on page 4 detects that sort order changed from posted_desc to relevance and stops. items.jsonl contains only six confirmed items j1-j6. report.md names the sort order change on page 4, reports requested N=10 and confirmed count=6, duplicates removed=0, includes the problem, and gives resume page 4 with last confirmed ID j6. It does not pad to 10 or include j7/j8.",
+      "files": [],
+      "expectations": [
+        "States before collection: sort order posted_desc, target N=10, stable ID URL.",
+        "items.jsonl contains only the six confirmed items j1 through j6, not j7 or j8.",
+        "report.md names the problem as a sort-order change on page 4, from posted_desc to relevance.",
+        "report.md reports requested N=10 and confirmed count=6, with no padding.",
+        "report.md gives a resume point of page 4 with last confirmed ID j6 or equivalent page plus ID.",
+        "The response does not retry endlessly or continue to page 5 after the sort change is detected."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "No tools; one reply only. Simulate the skill. Recorded sort order: price_asc. Target N: 12. Stable ID: URL. Mock observations: pages 1-4 return unique products p1 through p8, two per page, with titles Product 1 through Product 8 and URLs https://mock.test/p/1 through https://mock.test/p/8. Page 5 returns HTTP 500 on attempt 1 and HTTP 500 on attempt 2. Do not make a third attempt. Show the command/script with retry limit (not run), the final items.jsonl for the confirmed items, and report.md. State where to resume.",
+      "expected_output": "A good answer records price_asc and N=12; saves p1-p8 from pages 1-4; attempts page 5 twice, gets two consecutive failures, and stops without a third attempt. items.jsonl has exactly eight confirmed items p1-p8 with id, title, url, page, and position. report.md names two consecutive page failures at page 5, reports requested N=12 and confirmed count=8, duplicates removed=0, does not invent four items, and gives resume page 5 with last confirmed ID p8.",
+      "files": [],
+      "expectations": [
+        "Records sort order price_asc and target N=12 before collecting.",
+        "The shown command/script has a retry limit that allows at most two consecutive page failures and no third attempt.",
+        "items.jsonl contains exactly eight confirmed unique items p1-p8, each with id, title, url, page, and position.",
+        "report.md states two consecutive page failures at page 5 and reports requested N=12 versus confirmed count=8.",
+        "report.md does not pad or invent four items to reach N=12.",
+        "report.md gives resume point page 5 with last confirmed ID p8."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "No tools; one reply only. Simulate the skill. Sort order: rating_desc. Target N: 5. Stable ID: URL. Page size 3. Mock observations: page 1: a1, a2, a3 (URLs https://mock.test/a/1 to /a/3). page 2: a4, a5, a6 (URLs /a/4 to /a/6). page 3 exists with a7, a8, a9. Show the plan/command (not run), items.jsonl and report.md. Then say exactly how you would resume this run later to reach N=7.",
+      "expected_output": "",
+      "files": [],
+      "expectations": [
+        "items.jsonl contains exactly a1 through a5, each with id, title or placeholder, url, page and position.",
+        "The run does not fetch or use page 3.",
+        "report.md gives requested N=5, confirmed count=5, duplicates removed=0, problems none.",
+        "report.md gives the resume point as page 2 after a5, not page 3.",
+        "The resume explanation starts again at page 2 and skips IDs already in items.jsonl, so a6 is collected rather than lost.",
+        "The resume explanation then continues to page 3 for a7 to reach N=7."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "No tools; one reply only. Simulate the skill. Sort order: newest. Target N: 6. Stable ID: URL. Page size 4. Mock observations: page 1: b1, b2, b3, b4. page 2 returns only items already seen, in this order: b2, b4, b1, b3. page 3: b5, b6, b7, b8. Show the plan/command (not run), items.jsonl and report.md.",
+      "expected_output": "",
+      "files": [],
+      "expectations": [
+        "The run does not stop at page 2: a page of repeats is not treated as the end of the listing.",
+        "report.md does not report ended-early.",
+        "items.jsonl contains exactly b1 through b6, with no repeated ID.",
+        "report.md gives duplicates removed=4.",
+        "report.md gives requested N=6 and confirmed count=6.",
+        "report.md gives the resume point as page 3 after b6."
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "No tools; one reply only. Simulate the skill. Sort order: price_asc. Target N: 9. Stable ID: URL. Page size 3. Mock observations: page 1: c1, c2, c3. page 2: c3, c4, c5 (a new item was inserted above c1 during the crawl, pushing c3 onto page 2). page 3 returns HTTP 503 on attempt 1 and HTTP 503 on attempt 2. Do not make a third attempt. Show the plan/command (not run), items.jsonl and report.md.",
+      "expected_output": "",
+      "files": [],
+      "expectations": [
+        "items.jsonl contains exactly c1 through c5, with c3 only once.",
+        "report.md gives duplicates removed=1.",
+        "report.md names an items shift on page 2.",
+        "report.md also names the page failure on page 3: both problems are listed, not just one.",
+        "report.md gives requested N=9 and confirmed count=5, with no padding.",
+        "report.md gives the resume point as page 3 after c5."
+      ]
+    }
+  ]
+}

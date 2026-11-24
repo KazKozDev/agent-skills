@@ -5,14 +5,16 @@ Agent Skills for Claude Code and other agents that read `SKILL.md`: Codex, Gemin
 | Skill | What it does |
 |---|---|
 | [verified-summarization](skills/verified-summarization/SKILL.md) | Summaries you can check: every sentence cites a source paragraph, numbers, dates and conditions are verified by a script, then by meaning. English and Russian. |
+| [complete-list-collection](skills/complete-list-collection/SKILL.md) | The first N items of a paginated listing (jobs, products, search results), saved page by page without loss or duplicates, with a report that names what went wrong and where to resume. |
 
 ## Install
 
-**Claude Code**, as a plugin:
+**Claude Code**, as a plugin. Each skill is its own plugin, so install only the ones you need:
 
 ```
 /plugin marketplace add KazKozDev/agent-skills
 /plugin install verified-summarization@agent-skills
+/plugin install complete-list-collection@agent-skills
 ```
 
 **Any agent**, with the [skills](https://skills.sh) CLI, which asks which skills and agents to install for:
@@ -31,7 +33,7 @@ git clone https://github.com/KazKozDev/agent-skills.git
 ln -s "$PWD/agent-skills/skills/verified-summarization" ~/.claude/skills/verified-summarization
 ```
 
-Other agents use `~/.agents/skills`, `~/.codex/skills`, `~/.gemini/skills` and similar. In the Claude apps, zip the skill folder and upload it under Settings → Capabilities → Skills.
+The same for any other folder in `skills/`. Other agents use `~/.agents/skills`, `~/.codex/skills`, `~/.gemini/skills` and similar. In the Claude apps, zip the skill folder and upload it under Settings → Capabilities → Skills.
 
 ## verified-summarization
 
@@ -68,13 +70,52 @@ What this shows, plainly:
 - **It is slower**, 2–8× here. Use it where a wrong or untraceable claim costs more than the wait: contracts, study material, decisions, long documents.
 - **Not yet tested:** long documents (where facts in the middle get lost), other models, and the trigger queries in `evals/trigger-queries.json`.
 
+## complete-list-collection
+
+Ask for the first N jobs, products or search results from a listing, and the agent:
+
+1. States the URL, N, the sort order and the stable ID it will use (the item's own ID, or its URL without tracking parameters).
+2. Takes each page in a fixed order: fetch (one retry), read the items, check the sort, sort out repeats, append the new items to `items.jsonl`, then decide whether to go on.
+3. Tells a plain duplicate from a shift: repeats at the top of a page that match the end of the previous one mean an item was inserted mid-crawl.
+4. Stops at N or at the first problem (`page-failed`, `ended-early`, `sort-changed`) and fetches nothing after it.
+5. Writes `report.md` for every run, finished or not, with each problem, what was seen, and the page and ID to resume from.
+
+```text
+- Requested N: 40
+- Confirmed count: 30
+- Duplicates removed: 0
+- Problems detected: sort-changed on page 4 (Newest → Relevance)
+- Resume point: page 4, after ID item-30
+```
+
+It fetches with `curl` (or WebFetch, or Python requests) and uses a browser only when the listing needs JavaScript.
+
+### Evals
+
+Six tasks, each run twice with the skill and twice without it, on one model (deepseek-v4.1-flash, November 2026). The tasks describe the pages as text and check the plan, `items.jsonl` and `report.md`; tasks and details are in [`skills/complete-list-collection/evals/`](skills/complete-list-collection/evals/).
+
+| | With the skill | Without |
+|---|---|---|
+| Run 1 | 36/36 | 24/36 |
+| Run 2 | 36/36 | 26/36 |
+
+- **Where the model fails without it:** the resume point, in five of six tasks. Mostly it gives none, or a page without the last ID; stopping at N in the middle of page 2, it pointed to page 3, which loses the rest of page 2.
+- **What the skill adds** is a fixed order for each page, a way to tell a duplicate from a shift and from the end of the listing, and a report that names every problem, not just the first.
+- **Not yet tested:** real pages (a mock listing on localhost is planned, not built), other models.
+
 ## Tests
 
 ```bash
 python3 tests/test_verify_summary.py
 ```
 
-14 cases for `verify_summary.py`: seven real errors it must catch, seven false alarms it must not raise.
+14 cases for verified-summarization's `verify_summary.py`: seven real errors it must catch, seven false alarms it must not raise.
+
+## Adding a skill
+
+1. `skills/<name>/SKILL.md`, with its scripts and references next to it.
+2. `skills/<name>/evals/`: `evals.json` and `trigger-queries.json` in the skill-creator format, and the results.
+3. A plugin entry in `.claude-plugin/marketplace.json`, a row in the table above and a section here.
 
 ## License
 
